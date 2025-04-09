@@ -9,8 +9,7 @@ import java.util.Random;
 
 public class Apple {
     private Vector2 position;
-    private final Color color = Color.RED;
-    private TextureManager textureManager;
+    private final TextureManager textureManager;
 
     public Apple(int boardSize, TextureManager tm) {
         this.position = new Vector2(boardSize - (boardSize / 4), boardSize / 2);

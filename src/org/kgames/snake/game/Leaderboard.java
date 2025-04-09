@@ -1,8 +1,6 @@
 package org.kgames.snake.game;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +23,7 @@ public class Leaderboard {
         if (scores.size() < MAX_SCORES) {
             return true;
         }
-        return score > scores.get(scores.size() - 1).getScore();
+        return score > scores.getLast().getScore();
     }
     
     public void addScore(String name, int score) {
@@ -48,7 +46,7 @@ public class Leaderboard {
         if (scores.isEmpty()) {
             return 0;
         }
-        return scores.get(0).getScore();
+        return scores.getFirst().getScore();
     }
     
     public void loadScores() {
@@ -93,6 +91,7 @@ public class Leaderboard {
     }
     
     public static class Score implements Comparable<Score>, Serializable {
+        @Serial
         private static final long serialVersionUID = 1L;
         
         private final String name;

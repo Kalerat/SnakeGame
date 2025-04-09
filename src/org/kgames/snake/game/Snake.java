@@ -17,21 +17,19 @@ public class Snake {
     
     // Speed factor (1.0 = normal speed, higher values = faster)
     private double speedFactor = 1.0;
-    
+
     // Direction queue to handle rapid direction changes
     private Deque<Vector2> directionQueue = new ArrayDeque<>();
-    private boolean hasMoved = false; // Track if snake has moved since last direction change
+    private boolean hasMoved = false;
 
-    // Track head direction in degrees (0 = right, 90 = down, 180 = left, 270 = up)
     private int headDirection = 0;
     private int tailAnimationFrame = 0;
 
-    // Eating animation state
     private boolean isEating = false;
     private int eatingFramesLeft = 0;
-    private static final int EATING_ANIMATION_FRAMES = 10; // Display eating animation for 5 frames
+    private static final int EATING_ANIMATION_FRAMES = 10;
 
-    private TextureManager textureManager;
+    private final TextureManager textureManager;
 
     // Constants for corner type identification
     private static final int CORNER_TOP_RIGHT = 1001;
@@ -51,13 +49,12 @@ public class Snake {
         velY = 0;
         directionQueue.clear();
         hasMoved = false;
-        headDirection = 0; // Reset head direction to face right
+        headDirection = 0;
         tailAnimationFrame = 0;
-        speedFactor = 1.0; // Reset speed factor
-        isEating = false;  // Reset eating state
+        speedFactor = 1.0;
+        isEating = false;
         eatingFramesLeft = 0;
 
-        // Create initial snake with 3 segments
         Vector2 head = new Vector2(boardSize / 4, boardSize / 2);
         snakeElements.add(head);
         snakeElements.add(new Vector2(head.x - 1, head.y));
@@ -95,13 +92,11 @@ public class Snake {
 
     }
 
-    // Set the snake to "eating" state
     public void setEating() {
         isEating = true;
         eatingFramesLeft = EATING_ANIMATION_FRAMES;
     }
 
-    // Check if snake is in "eating" state
     public boolean isEating() {
         return isEating;
     }
@@ -178,7 +173,6 @@ public class Snake {
         return snakeElements;
     }
 
-    // Calculate the appropriate rotation angle for body segments
     private int calculateBodySegmentAngle(Vector2 before, Vector2 current, Vector2 after) {
         // Determine the direction vectors
         int beforeDirX = current.x - before.x;
@@ -270,28 +264,29 @@ public class Snake {
             // Check if this is a corner segment
             if (bodyAngleOrCornerType >= 1000) {
                 // Use the appropriate corner texture and rotation based on the corner type
-                switch (bodyAngleOrCornerType) {
-                    case CORNER_TOP_LEFT:
+                rotationAngle = switch (bodyAngleOrCornerType) {
+                    case CORNER_TOP_LEFT -> {
                         bodyImage = textureManager.SNAKE_BODY_CORNER_LEFT;
-                        rotationAngle = 180;
-                        break;
-                    case CORNER_TOP_RIGHT:
+                        yield 180;
+                    }
+                    case CORNER_TOP_RIGHT -> {
                         bodyImage = textureManager.SNAKE_BODY_CORNER_RIGHT;
-                        rotationAngle = 180;
-                        break;
-                    case CORNER_BOTTOM_LEFT:
+                        yield 180;
+                    }
+                    case CORNER_BOTTOM_LEFT -> {
                         bodyImage = textureManager.SNAKE_BODY_CORNER_LEFT;
-                        rotationAngle = 90;
-                        break;
-                    case CORNER_BOTTOM_RIGHT:
+                        yield 90;
+                    }
+                    case CORNER_BOTTOM_RIGHT -> {
                         bodyImage = textureManager.SNAKE_BODY_CORNER_RIGHT;
-                        rotationAngle = 270;
-                        break;
-                    default:
+                        yield 270;
+                    }
+                    default -> {
                         bodyImage = i % 2 == 0 ?
-                            textureManager.SNAKE_BODY_IMAGE : textureManager.SNAKE_BODY_IMAGE_2;
-                        rotationAngle = 0;
-                }
+                                textureManager.SNAKE_BODY_IMAGE : textureManager.SNAKE_BODY_IMAGE_2;
+                        yield 0;
+                    }
+                };
             } else {
                 // For straight segments, use alternating body textures
                 bodyImage = i % 2 == 0 ?
@@ -312,27 +307,15 @@ public class Snake {
 
             int tailAngle = calculateTailAngle(secondLast, tail);
 
-            BufferedImage tailImage;
-            switch(tailAnimationFrame) {
-                case 0:
-                    tailImage = textureManager.SNAKE_TAIL_IMAGE_1;
-                    break;
-                case 1:
-                    tailImage = textureManager.SNAKE_TAIL_IMAGE_2;
-                    break;
-                case 2:
-                    tailImage = textureManager.SNAKE_TAIL_IMAGE_3;
-                    break;
-                case 3:
-                    tailImage = textureManager.SNAKE_TAIL_IMAGE_4;
-                    break;
-                case 4:
-                    tailImage = textureManager.SNAKE_TAIL_IMAGE_5;
-                    break;
-                default:
-                    tailImage = textureManager.SNAKE_TAIL_IMAGE_1;
-            }
-            
+            BufferedImage tailImage = switch (tailAnimationFrame) {
+                case 0 -> textureManager.SNAKE_TAIL_IMAGE_1;
+                case 1 -> textureManager.SNAKE_TAIL_IMAGE_2;
+                case 2 -> textureManager.SNAKE_TAIL_IMAGE_3;
+                case 3 -> textureManager.SNAKE_TAIL_IMAGE_4;
+                case 4 -> textureManager.SNAKE_TAIL_IMAGE_5;
+                default -> textureManager.SNAKE_TAIL_IMAGE_1;
+            };
+
             drawRotatedImage(g2d, tailImage, tail.x * elementSize,
                            tail.y * elementSize + drawOffset, 
                            elementSize, elementSize, tailAngle);

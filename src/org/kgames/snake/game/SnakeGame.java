@@ -28,8 +28,8 @@ public class SnakeGame extends JPanel implements KeyListener, MouseListener, Com
 
     private Snake snake;
     private Apple apple;
-    private TextureManager textureManager;
-    private AudioManager audioManager;
+    private final TextureManager textureManager;
+    private final AudioManager audioManager;
 
     private boolean inGame;
     private Thread gameThread;

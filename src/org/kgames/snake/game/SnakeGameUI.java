@@ -21,7 +21,7 @@ public class SnakeGameUI{
     private StringBuilder playerName = new StringBuilder();
     private int pendingScore = 0;
 
-    private SnakeGame game;
+    private final SnakeGame game;
 
     public SnakeGameUI(SnakeGame game) {
         this.game = game;
